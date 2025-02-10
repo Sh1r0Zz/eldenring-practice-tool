@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - i18n_zh-CN
 
 jobs:
   build:
@@ -26,13 +26,6 @@ jobs:
           name: jdsd_er_practice_tool
           path: target/dist/jdsd_er_practice_tool.zip
 
-      - name: Remove nightly release asset
-        uses: flcdrg/remove-release-asset-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          release_id: 70590819
-          asset_name: jdsd_er_practice_tool.zip
 
       - name: Upload nightly release asset
         uses: actions/upload-release-asset@v1
