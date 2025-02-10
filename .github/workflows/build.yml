@@ -26,6 +26,17 @@ jobs:
           name: jdsd_er_practice_tool
           path: target/dist/jdsd_er_practice_tool.zip
 
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: v1.0.0
+          release_name: Release v1.0.0
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       - name: Upload nightly release asset
         uses: actions/upload-release-asset@v1
