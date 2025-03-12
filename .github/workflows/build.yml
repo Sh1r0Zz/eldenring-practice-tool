@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - i18n_zh-CN
 
 jobs:
   build:
@@ -20,28 +20,31 @@ jobs:
       - name: Distribution build
         run: cargo xtask dist
 
+      - name: Create GitHub Release
+        id: create_release  # 定义步骤 ID，用于后续引用输出变量
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 自动生成的权限令牌
+        with:
+          tag_name: ${{ github.ref_name }}  # 使用触发工作流的标签名
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: jdsd_er_practice_tool
           path: target/dist/jdsd_er_practice_tool.zip
 
-      - name: Remove nightly release asset
-        uses: flcdrg/remove-release-asset-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          release_id: 70590819
-          asset_name: jdsd_er_practice_tool.zip
-
+     
       - name: Upload nightly release asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: https://uploads.github.com/repos/veeenu/eldenring-practice-tool/releases/70590819/assets{?name,label}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: target/dist/jdsd_er_practice_tool.zip
           asset_name: jdsd_er_practice_tool.zip
           asset_content_type: application/zip
           
-
